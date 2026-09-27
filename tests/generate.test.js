@@ -33,6 +33,10 @@ test('endpoint selection, validation and error behavior', async()=>{
     assert.match(sent.prompt,/clear ceiling, without suspended balloons/);
     for(const body of [payload([{id:'tablecloth',quantity:-1}]),payload([{id:'bad'}]),payload([{id:'cloud'},{id:'cloud'}]),payload([],'sweet',99)]) assert.equal((await invoke(body)).statusCode,400);
     globalThis.fetch=async()=>({ok:false,json:async()=>({error:{message:'sensitive upstream details'}})});
-    const failed=await invoke(payload()); assert.equal(failed.statusCode,500);assert.doesNotMatch(failed.data.error,/sensitive/);
+    const failed=await invoke(payload()); assert.equal(failed.statusCode,503);assert.doesNotMatch(failed.data.error,/sensitive/);
+    for(const [status,code,message,expected] of [[400,"billing_hard_limit_reached","Billing hard limit reached","billing_required"],[429,"insufficient_quota","Quota exceeded","billing_required"],[401,"invalid_api_key","secret upstream text","invalid_api_key"],[403,"permission_denied","Organization must be verified","verification_required"],[404,"model_not_found","No model","model_access"],[429,"rate_limit_exceeded","Try later","rate_limit"]]) {
+      globalThis.fetch=async()=>({ok:false,status,json:async()=>({error:{code,message}})});
+      const response=await invoke(payload());assert.equal(response.data.code,expected);assert.doesNotMatch(response.data.error,/secret upstream/);
+    }
   } finally { globalThis.fetch=originalFetch;if(originalKey===undefined)delete process.env.OPENAI_API_KEY;else process.env.OPENAI_API_KEY=originalKey; }
 });

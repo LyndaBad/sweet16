@@ -83,7 +83,29 @@ COMPOSITION: one wide-angle finished event photograph showing how the complete s
       body:JSON.stringify({model:"gpt-image-2",prompt,size:"1536x1024",n:1,quality:"medium",output_format:"webp",output_compression:80})
     });
     const data=await response.json();
-    if(!response.ok) throw new Error(data?.error?.message||"OpenAI image generation failed.");
+    if(!response.ok) {
+      const code=String(data?.error?.code || data?.error?.type || "unknown");
+      const message=String(data?.error?.message || "");
+      let reason="upstream_error", detail="The image service is temporarily unavailable. Please try again shortly.";
+      if(/quota|billing|credit|usage limit/i.test(code+" "+message)) {
+        reason="billing_required"; detail="AI mock-ups are unavailable because the site's OpenAI API account has no available credit or has reached its spending limit. The site owner needs to check OpenAI API billing.";
+      } else if(response.status===401) {
+        reason="invalid_api_key"; detail="The image service could not authenticate. The site owner needs to update the OpenAI API key in Vercel and redeploy.";
+      } else if(/verif/i.test(message)) {
+        reason="verification_required"; detail="The OpenAI account needs verification before this image model can be used. The site owner needs to complete verification in OpenAI settings.";
+      } else if(response.status===403 || code==="model_not_found") {
+        reason="model_access"; detail="The site's OpenAI project does not have access to the image model. The site owner needs to check model permissions.";
+      } else if(response.status===429) {
+        reason="rate_limit"; detail="The image service is busy. Please wait a minute before trying again.";
+      } else if(/moderation|safety|content_policy/i.test(code+" "+message)) {
+        reason="content_rejected"; detail="The image service could not use these event notes. Please rephrase them and try again.";
+      } else if(response.status===400) {
+        reason="invalid_image_request"; detail="The image service rejected the request settings. Please contact the site owner.";
+      }
+      // Record only an allowlisted category and HTTP status, never raw API errors, keys or client notes.
+      console.error("Image generation rejected", JSON.stringify({status:response.status,reason}));
+      return res.status(reason==="rate_limit"?429:503).json({error:detail,code:reason});
+    }
     const item=data?.data?.[0];
     const image=item?.b64_json?`data:image/webp;base64,${item.b64_json}`:item?.url;
     if(!image) throw new Error("No image was returned by the image generation service.");
