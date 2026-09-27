@@ -49,3 +49,15 @@ test('each event uses its own canonical packages and rejects cross-event selecti
  await invoke({...payload([{id:'marquee'}],'party'),eventId:'birthdays',birthdayAge:'40'});assert.match(prompt,/Birthday age: 40/);
  }finally{globalThis.fetch=before;if(key===undefined)delete process.env.OPENAI_API_KEY;else process.env.OPENAI_API_KEY=key;}
 });
+
+test('priced event collections have photos, finite addon prices and wedding order',async()=>{
+ const {events,eventOrder}=await import('../events.js');
+ assert.deepEqual(eventOrder,['sweet16','proposals','birthdays','weddings','traditional']);
+ assert.equal(events.traditional.name,'African Traditional Weddings');
+ for(const event of Object.values(events)){
+ for(const pkg of Object.values(event.packages)){assert.ok(pkg.price>0);assert.equal(pkg.looks.length,3);for(const look of pkg.looks)assert.ok(look[1]);}
+ for(const addon of Object.values(event.addons))assert.ok(addon[1]>0);
+ }
+ assert.match(events.traditional.packages.heritage.looks[0][0],/Nigerian/);
+ assert.match(events.traditional.packages.heritage.looks[1][0],/Ghanaian/);
+});

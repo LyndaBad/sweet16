@@ -1,4 +1,4 @@
-import { events, enquiryEmail } from "./events.js";
+import { events, enquiryEmail, eventOrder } from "./events.js";
 let eventId="sweet16";
 let {packages,addons}=events[eventId];
 const savedStates={};
@@ -28,7 +28,9 @@ function renderLooks(){
     btn.type="button"; btn.className="look-card"+(state.lookIndex===i?" selected":"");
     btn.innerHTML=`${look[1]?`<img src="${look[1]}" alt="${look[0]}">`:`<div class="look-swatch swatch-${i}" aria-hidden="true">✦</div>`}<span>${look[0]}</span>`;
     btn.addEventListener("click",()=>{state.lookIndex=i;renderLooks();updateSummary();});
-    host.appendChild(btn);
+    const card=document.createElement("div");card.className="look-option";card.appendChild(btn);
+    if(look[3]){const credit=document.createElement("a");credit.href=look[3];credit.target="_blank";credit.rel="noopener noreferrer";credit.className="photo-credit";credit.textContent="Photo source · Pexels";card.appendChild(credit);}
+    host.appendChild(card);
   });
 }
 
@@ -122,12 +124,15 @@ function switchEvent(id){
  $("eventTitle").textContent=event.title; $("eventIntro").textContent=event.intro; $("eventEyebrow").textContent=event.name+" Designer";
  $("builderTitle").textContent="Design your "+event.name.toLowerCase();
  $("birthdayField").classList.toggle("hidden",id!=="birthdays");$("heritageField").classList.toggle("hidden",id!=="traditional");
- $("heroImage").classList.toggle("hidden",id!=="sweet16");$("eventArtwork").classList.toggle("hidden",id==="sweet16");$("eventArtwork").textContent=event.name;
+ $("heroImage").classList.remove("hidden");$("eventArtwork").classList.add("hidden");
+ $("heroImage").src=event.hero?.src||"/assets/signature-pink.webp";$("heroImage").alt=event.hero?.label||"Sweet Sixteen decor concept";
+ $("heroCredit").classList.toggle("hidden",!event.hero);$("heroCredit").href=event.hero?.source||"#";
+ $("priceNote").classList.toggle("hidden",id==="sweet16");$("inspirationNote").classList.toggle("hidden",id==="sweet16");
  $("downloadBtn").download=id+"-decor-concept.jpg";$("generatedImage").alt="AI-generated "+event.name+" concept";
  document.querySelectorAll('.event-tab').forEach(btn=>{btn.setAttribute('aria-pressed',String(btn.dataset.event===id));});
  document.body.dataset.event=id; renderAll();
 }
-for(const [id,event] of Object.entries(events)){
+for(const [id,event] of eventOrder.map(id=>[id,events[id]])){
  const btn=document.createElement("button");btn.className="event-tab";btn.type="button";btn.dataset.event=id;btn.textContent=event.name;btn.setAttribute("aria-pressed",String(id===eventId));btn.addEventListener("click",()=>switchEvent(id));$("eventTabs").appendChild(btn);
 }
 $("enquiryForm").addEventListener("submit",e=>{

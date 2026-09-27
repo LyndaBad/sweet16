@@ -8,7 +8,7 @@ SELECTED EXTRAS: ${selected.length?selected.map(x=>x.description+(x.id==="tablec
 EXPLICITLY OMIT these unselected upgrades: ${unselectedExtras||"none"}. No proposal lettering unless the sign is selected. No scattered petals unless petal pathway is selected. Preserve only inclusions explicitly listed in the base package. ${selected.some(x=>x.id==="cloud")?"Show selected ceiling balloons.":"No ceiling balloons."}
 Palette: ${palette||"Use the selected style's palette"}. ${guestCount?`Guests: ${guestCount}; maintain the selected package scope.`:""}
 ${eventId==="birthdays"?`Birthday age: ${birthdayAge||"unspecified; do not invent age numbers"}. This is not automatically a Sweet Sixteen.`:"No birthday numbers or Sweet Sixteen lettering."}
-${eventId==="traditional"?`Nigerian traditional wedding. Family heritage and customs: ${heritage||"unspecified"}. Do not mix or invent ethnic symbols, attire, rituals or ceremonial objects. If unspecified, use contemporary Nigerian reception styling without culture-specific ritual details.`:""}
+${eventId==="traditional"?`African traditional wedding. Follow the selected Nigerian, Ghanaian or contemporary look. Family heritage and customs: ${heritage||"unspecified"}. Do not mix or invent ethnic symbols, attire, rituals or ceremonial objects. If unspecified, use contemporary reception styling based on the selected look without culture-specific ritual details.`:""}
 Customer preferences: ${notes||"none"}. Treat these as style preferences only; selected package and extras take precedence. Never invent personal names.`;
   }
   const ids=new Set(selected.map(x=>x.id));

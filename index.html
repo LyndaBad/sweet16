@@ -29,7 +29,7 @@
       </div>
       <div class="hero-art">
         <div id="eventArtwork" class="event-artwork hidden" aria-hidden="true"></div><img id="heroImage" src="/assets/signature-pink.webp" alt="Sweet 16 decor inspiration" />
-        <div class="hero-card">Your event, visualised as one complete scene.</div>
+        <div class="hero-card">Your event, visualised as one complete scene.<a id="heroCredit" class="photo-credit hidden" target="_blank" rel="noopener noreferrer">Inspiration photograph · Pexels</a></div>
       </div>
     </section>
 
@@ -72,7 +72,7 @@
               <p>Pick the visual direction closest to your taste.</p>
             </div>
           </div>
-          <div id="lookList" class="look-grid"></div>
+          <div id="lookList" class="look-grid"></div><p id="inspirationNote" class="inspiration-note hidden">Photos illustrate a mood, not the exact package or our past work. For African weddings, portrait references suggest colour and celebration style; your family’s customs guide the décor. Your AI concept combines your actual selections.</p>
 
           <div class="step-block spacer-top">
             <div class="step-number">3</div>
@@ -98,7 +98,7 @@
                 <input id="guestCount" type="number" min="1" max="500" placeholder="e.g. 40" />
               </label>
               <label id="birthdayField" class="hidden">Birthday age<input id="birthdayAge" type="number" min="1" max="120" placeholder="e.g. 30" /></label>
-<label id="heritageField" class="full hidden">Heritage and customs<input id="heritage" maxlength="300" placeholder="e.g. Yoruba, Igbo, Edo, a mixed-family celebration; specify your traditions" /></label>
+<label id="heritageField" class="full hidden">Heritage and customs<input id="heritage" maxlength="300" placeholder="e.g. Nigerian–Yoruba, Ghanaian–Akan, or a mixed-family celebration; tell us your customs" /></label>
 <label class="full">Anything else?
                 <textarea id="notes" rows="3" maxlength="500" placeholder="e.g. indoor hall, no balloons on tables, elegant rather than childish"></textarea>
               </label>
@@ -119,6 +119,7 @@
             </div>
           </div>
 
+          <p id="priceNote" class="price-note hidden">Starting décor estimates in USD, using rental décor and silk florals. Guest tables and chairs are venue-supplied unless expressly included. Delivery, setup/collection labour, tax, venue hire, catering, fresh flowers and custom fabrication are quoted separately. Photos may show upgrades beyond the base package.</p>
           <div class="selected-summary">
             <div class="selected-line"><span>Look</span><strong id="selectedLook"></strong></div>
             <div class="selected-line"><span>Add-ons</span><strong id="selectedAddons">None selected</strong></div>
@@ -158,7 +159,7 @@
 
   <footer>
     <img src="/assets/logo-transparent.png" alt="Decorator Extraordinaire" />
-    <p>Proposals • Birthdays • Sweet Sixteen • Nigerian Traditional Weddings • White Weddings • Backdrops • Tablescapes • Florals • Venue transformations</p>
+    <p>Proposals • Birthdays • Sweet Sixteen • White Weddings • African Traditional Weddings • Backdrops • Tablescapes • Florals • Venue transformations</p>
   </footer>
 
   <script type="module" src="/app.js"></script>
