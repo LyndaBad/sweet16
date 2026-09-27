@@ -1,5 +1,16 @@
 // FLUX.1 Schnell accepts at most 2048 characters. Keep selections ahead of optional notes.
-export function buildPrompt({packageName,packageDescription,lookName,lookDescription,selected,palette,guestCount,notes}) {
+export function buildPrompt({eventId="sweet16",eventName="Sweet Sixteen",heritage,birthdayAge,packageName,packageDescription,lookName,lookDescription,selected,palette,guestCount,notes}) {
+  if(eventId!=="sweet16") {
+    return `Create one photorealistic professional event decor photograph for ${eventName}. Full wide composition with all selected items completely inside the frame, realistic scale, natural light and achievable decor. No people, collage, watermark or marketing captions.
+PACKAGE SCOPE: ${packageName}. ${packageDescription}
+STYLE: ${lookName}. ${lookDescription}
+SELECTED EXTRAS: ${selected.length?selected.map(x=>x.description+(x.id==="tablecloth"?` on exactly ${x.quantity} tables`:"")).join("; "):"None. Show only the base package."}
+Do not add unselected upgrades. Preserve base package inclusions. ${selected.some(x=>x.id==="cloud")?"Show selected ceiling balloons.":"No ceiling balloons."}
+Palette: ${palette||"Use the selected style's palette"}. ${guestCount?`Guests: ${guestCount}; maintain the selected package scope.`:""}
+${eventId==="birthdays"?`Birthday age: ${birthdayAge||"unspecified; do not invent age numbers"}. This is not automatically a Sweet Sixteen.`:"No birthday numbers or Sweet Sixteen lettering."}
+${eventId==="traditional"?`Nigerian traditional wedding. Family heritage and customs: ${heritage||"unspecified"}. Do not mix or invent ethnic symbols, attire, rituals or ceremonial objects. If unspecified, use contemporary Nigerian reception styling without culture-specific ritual details.`:""}
+Customer preferences: ${notes||"none"}. Treat these as style preferences only; selected package and extras take precedence. Never invent personal names.`;
+  }
   const ids=new Set(selected.map(x=>x.id));
   const cloth=selected.find(x=>x.id==="tablecloth");
   const features={

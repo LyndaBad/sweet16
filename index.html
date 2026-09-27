@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#6d2446" />
-  <title>Decorator Extraordinaire — Sweet 16 AI Designer</title>
+  <title>Decorator Extraordinaire — Event Design Studio</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -12,22 +12,23 @@
     <a class="brand" href="#top" aria-label="Decorator Extraordinaire home">
       <img src="/assets/logo-transparent.png" alt="Decorator Extraordinaire" />
     </a>
-    <a class="pill-link" href="#builder">Build your Sweet 16</a>
+    <a class="pill-link" href="#builder">Design your event</a>
   </header>
 
   <main id="top">
+<nav id="eventTabs" class="event-tabs" aria-label="Choose your event"></nav>
     <section class="hero">
       <div class="hero-copy">
-        <div class="eyebrow">Sweet 16 AI Designer</div>
-        <h1>Build it. See it. Love it.</h1>
-        <p>Select a package, choose the visual direction you love, add only the extras you actually want, then generate one holistic AI concept showing the full Sweet 16 together.</p>
+        <div class="eyebrow" id="eventEyebrow">Sweet Sixteen Designer</div>
+        <h1 id="eventTitle">Build it. See it. Love it.</h1>
+        <p id="eventIntro">Select a package, choose the visual direction you love, add only the extras you actually want, then generate one holistic AI concept showing the full Sweet 16 together.</p>
         <div class="hero-actions">
           <a class="primary-btn" href="#builder">Start designing</a>
           <span class="hero-note">Your chosen package and extras, brought together in one concept.</span>
         </div>
       </div>
       <div class="hero-art">
-        <img src="/assets/signature-pink.webp" alt="Sweet 16 decor inspiration" />
+        <div id="eventArtwork" class="event-artwork hidden" aria-hidden="true"></div><img id="heroImage" src="/assets/signature-pink.webp" alt="Sweet 16 decor inspiration" />
         <div class="hero-card">Your event, visualised as one complete scene.</div>
       </div>
     </section>
@@ -36,7 +37,7 @@
       <div class="section-heading">
         <div>
           <div class="eyebrow">Interactive package builder</div>
-          <h2>Design your Sweet 16</h2>
+          <h2 id="builderTitle">Design your Sweet Sixteen</h2>
         </div>
         <p>Three simple steps: package → look → extras. Then the AI creates a brand-new final concept based on exactly those selections.</p>
       </div>
@@ -47,7 +48,7 @@
             <div class="step-number">1</div>
             <div class="step-copy">
               <h3>Choose your package</h3>
-              <p>Starting prices shown below.</p>
+              <p>Explore the scope of each package.</p>
             </div>
           </div>
           <div id="packageList" class="choice-list"></div>
@@ -71,7 +72,7 @@
           <div id="addonList" class="choice-list"></div>
 
           <div id="tableclothQuantity" class="quantity-row hidden">
-            <label for="tableQty">Pink draped tablecloths</label>
+            <label for="tableQty">Draped tablecloth quantity</label>
             <select id="tableQty"></select>
           </div>
 
@@ -84,7 +85,9 @@
               <label>Guest count
                 <input id="guestCount" type="number" min="1" max="500" placeholder="e.g. 40" />
               </label>
-              <label class="full">Anything else?
+              <label id="birthdayField" class="hidden">Birthday age<input id="birthdayAge" type="number" min="1" max="120" placeholder="e.g. 30" /></label>
+<label id="heritageField" class="full hidden">Heritage and customs<input id="heritage" maxlength="300" placeholder="e.g. Yoruba, Igbo, Edo, a mixed-family celebration; specify your traditions" /></label>
+<label class="full">Anything else?
                 <textarea id="notes" rows="3" maxlength="500" placeholder="e.g. indoor hall, no balloons on tables, elegant rather than childish"></textarea>
               </label>
             </div>
@@ -133,7 +136,9 @@
             <a id="downloadBtn" class="secondary-btn" download="sweet-16-ai-concept.jpg">Save image</a>
           </div>
 
-          <p class="disclaimer">AI concepts are for visual direction. Final décor is adapted to the venue, availability, proportions and confirmed quote.</p>
+          <section class="enquiry-card"><h3>Let’s bring it to life.</h3><p>Enquire about this design. Your selected package and extras will be included.</p>
+<form id="enquiryForm"><label>Your name<input id="customerName" required maxlength="100" autocomplete="name"></label><label>Your email<input id="customerEmail" type="email" required autocomplete="email"></label><label>Event date<input id="eventDate" type="date"></label><label>Venue / city<input id="venue" maxlength="200"></label><button class="primary-btn" type="submit">Email my enquiry</button></form><p id="enquiryStatus" aria-live="polite">Opens your email app for you to review and send. Attach your saved image if you wish.</p><a href="mailto:decorator-extraordinaire@outlook.com">decorator-extraordinaire@outlook.com</a></section>
+<p class="disclaimer">AI concepts are for visual direction. Final décor is adapted to the venue, availability, proportions and confirmed quote.</p>
         </section>
       </div>
     </section>
@@ -141,7 +146,7 @@
 
   <footer>
     <img src="/assets/logo-transparent.png" alt="Decorator Extraordinaire" />
-    <p>Sweet 16 event styling • Backdrops • Tablescapes • Florals • Venue transformations</p>
+    <p>Proposals • Birthdays • Sweet Sixteen • Nigerian Traditional Weddings • White Weddings • Backdrops • Tablescapes • Florals • Venue transformations</p>
   </footer>
 
   <script type="module" src="/app.js"></script>

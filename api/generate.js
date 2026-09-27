@@ -1,5 +1,5 @@
 import { buildPrompt } from "../image-prompt.js";
-import { packages, addons } from "../catalog.js";
+import { events } from "../events.js";
 const PACKAGE_IDS = new Set(["photo","sweet","garden","lounge","dinner","signature","luxe","extra"]);
 const ADDON_IDS = new Set(["cloud","table","marquee","sign","balloon","floral","drape","spark","celebrant","tablecloth"]);
 
@@ -13,8 +13,12 @@ export default async function handler(req,res){
 
   try{
     const b=req.body||{};
+    const eventId=clean(b.eventId||"sweet16",30);
+    const event=Object.hasOwn(events,eventId)?events[eventId]:null;
+    if(!event) return res.status(400).json({error:"Invalid event type."});
+    const {packages,addons}=event;
     const packageId=clean(b.package?.id,30);
-    if(!PACKAGE_IDS.has(packageId)) return res.status(400).json({error:"Invalid package."});
+    if(!Object.hasOwn(packages,packageId)) return res.status(400).json({error:"Invalid package."});
 
     const pkg=packages[packageId];
     const lookIndex=b.look?.index;
@@ -27,12 +31,14 @@ export default async function handler(req,res){
     const guestCount=clean(b.guestCount,10);
     if(guestCount && (!Number.isInteger(Number(guestCount)) || Number(guestCount)<1 || Number(guestCount)>500)) return res.status(400).json({error:"Guest count must be between 1 and 500."});
     const notes=clean(b.notes,500);
-    if(!Array.isArray(b.addons) || b.addons.length>10 || b.addons.some(x=>!x || !ADDON_IDS.has(x.id)) || new Set(b.addons.map(x=>x.id)).size!==b.addons.length) return res.status(400).json({error:"Invalid add-ons."});
+    if(!Array.isArray(b.addons) || b.addons.length>10 || b.addons.some(x=>!x || !Object.hasOwn(addons,x.id)) || new Set(b.addons.map(x=>x.id)).size!==b.addons.length) return res.status(400).json({error:"Invalid add-ons."});
     const selected=b.addons.map(x=>({id:x.id,name:addons[x.id][0],description:addons[x.id][2],quantity:x.id==="tablecloth"?x.quantity:undefined}));
     if(selected.some(x=>x.id==="tablecloth" && (!Number.isInteger(x.quantity) || x.quantity<1 || x.quantity>20))) return res.status(400).json({error:"Choose 1 to 20 draped tablecloths."});
-    if(packageId==="extra" && lookIndex===2 && !selected.some(x=>x.id==="cloud")) lookDescription="dreamy upscale blush ballroom with atmospheric lighting and a clear ceiling, without suspended balloons";
+    if(eventId==="sweet16" && packageId==="extra" && lookIndex===2 && !selected.some(x=>x.id==="cloud")) lookDescription="dreamy upscale blush ballroom with atmospheric lighting and a clear ceiling, without suspended balloons";
 
-    const prompt=buildPrompt({packageName,packageDescription,lookName,lookDescription,selected,palette,guestCount,notes});
+    const birthdayAge=clean(b.birthdayAge,3);
+    if(birthdayAge && (!Number.isInteger(Number(birthdayAge)) || Number(birthdayAge)<1 || Number(birthdayAge)>120)) return res.status(400).json({error:"Birthday age must be from 1 to 120."});
+    const prompt=buildPrompt({eventId,eventName:event.name,heritage:clean(b.heritage,300),birthdayAge,packageName,packageDescription,lookName,lookDescription,selected,palette,guestCount,notes});
     const response=await fetch("https://api.openai.com/v1/images/generations",{
       method:"POST",
       signal:AbortSignal.timeout(120000),

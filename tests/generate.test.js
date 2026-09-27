@@ -35,3 +35,17 @@ test('OpenAI endpoint, validation, successful output, safe errors',async()=>{
   globalThis.fetch=async()=>({ok:true,json:async()=>({success:true,result:{}})});assert.equal((await invoke(payload())).statusCode,502);
  }finally{globalThis.fetch=fetchBefore;for(const key of ['OPENAI_API_KEY'])if(envBefore[key]===undefined)delete process.env[key];else process.env[key]=envBefore[key];}
 });
+
+test('each event uses its own canonical packages and rejects cross-event selections',async()=>{
+ const {events}=await import('../events.js');const before=globalThis.fetch,key=process.env.OPENAI_API_KEY;process.env.OPENAI_API_KEY='test';let prompt;
+ globalThis.fetch=async(u,o)=>{prompt=JSON.parse(o.body).prompt;return {ok:true,json:async()=>({data:[{b64_json:'dGVzdA=='}]})}};
+ try{
+ for(const [eventId,event] of Object.entries(events))for(const id of Object.keys(event.packages))for(let index=0;index<3;index++){
+ const r=await invoke({...payload([],id,index),eventId});assert.equal(r.statusCode,200);assert.ok(prompt.includes(event.packages[id].name));
+ }
+ assert.equal((await invoke({...payload(),eventId:'invalid'})).statusCode,400);
+ assert.equal((await invoke({...payload([{id:'marquee'}],'ceremony'),eventId:'weddings'})).statusCode,400);
+ await invoke({...payload([],'heritage'),eventId:'traditional',heritage:'Yoruba and Igbo'});assert.match(prompt,/Yoruba and Igbo/);assert.match(prompt,/Do not mix or invent/);
+ await invoke({...payload([{id:'marquee'}],'party'),eventId:'birthdays',birthdayAge:'40'});assert.match(prompt,/Birthday age: 40/);
+ }finally{globalThis.fetch=before;if(key===undefined)delete process.env.OPENAI_API_KEY;else process.env.OPENAI_API_KEY=key;}
+});
