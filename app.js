@@ -127,7 +127,7 @@ function switchEvent(id){
  $("heroImage").classList.remove("hidden");$("eventArtwork").classList.add("hidden");
  $("heroImage").src=event.hero?.src||"/assets/signature-pink.webp";$("heroImage").alt=event.hero?.label||"Sweet Sixteen decor concept";
  $("heroCredit").classList.toggle("hidden",!event.hero);$("heroCredit").href=event.hero?.source||"#";
- $("priceNote").classList.toggle("hidden",id==="sweet16");$("inspirationNote").classList.toggle("hidden",id==="sweet16");
+ $("inspirationNote").textContent="Photos illustrate a mood, not the exact package or our past work. " + (id==="traditional" ? "Portrait references suggest colour and celebration style; your family’s customs guide the décor. " : "") + "Your AI concept combines your actual selections.";$("priceNote").classList.toggle("hidden",id==="sweet16");$("inspirationNote").classList.toggle("hidden",id==="sweet16");
  $("downloadBtn").download=id+"-decor-concept.jpg";$("generatedImage").alt="AI-generated "+event.name+" concept";
  document.querySelectorAll('.event-tab').forEach(btn=>{btn.setAttribute('aria-pressed',String(btn.dataset.event===id));});
  document.body.dataset.event=id; renderAll();
