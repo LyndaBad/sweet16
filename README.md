@@ -1,13 +1,13 @@
 # Decorator Extraordinaire — Sweet 16 AI Designer
 
-Eight packages, three looks each, ten add-ons and a server-side Cloudflare Workers AI image endpoint using FLUX.1 Schnell.
+Eight packages, three looks each, ten add-ons, and server-side OpenAI image generation.
 
 ## Setup
-Keep the website hosted on Vercel. Configure CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN as server-only environment variables, then deploy. Scope the token to Workers AI on the selected account. Never commit credentials. Use the Cloudflare Workers Free plan for a daily free allowance that stops at the limit; do not enable a paid plan or paid fallback without owner approval.
+Host on Vercel and set OPENAI_API_KEY as a server-only production environment variable. Never commit credentials. The OpenAI account needs available API credit.
+
+Generation uses gpt-image-2, medium quality, 1536x1024 landscape JPEG, one image per request. These settings are fixed on the server. Each generation or regeneration incurs API usage. Cloudflare is no longer called. No automatic retries or provider fallback are used.
 
 ## Verification
-Run npm test. Tests cover every package/look and add-on combination within the model's 2048-character prompt limit, validation, response parsing, and safe quota/auth errors. Real visual fidelity must also be tested after connecting Cloudflare.
+Run npm test. Tests cover all package/look/add-on combinations, input validation, fixed model and quality, response parsing, and safe billing/auth errors. Check actual generated concepts visually; counts and placement are not guaranteed.
 
-The server trusts its shared catalog, not client descriptions. Base lounge seating and standard flowers stay included. Ceiling balloons require Cloud Nine. Changing selections discards stale previews. Exact counts and placement in generated images still need visual review.
-
-The OpenAI API is no longer called. Existing OpenAI environment values can be removed by the owner; they are not used. Cloudflare credentials are never sent to the browser.
+The server trusts its shared catalog, not client descriptions. Base lounge seating and standard flowers stay included. Ceiling balloons require Cloud Nine. Changing selections discards stale previews. Credentials never reach the browser.

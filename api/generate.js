@@ -9,7 +9,7 @@ function clean(value, max=500){
 
 export default async function handler(req,res){
   if(req.method!=="POST") return res.status(405).json({error:"POST only"});
-  if(!process.env.CLOUDFLARE_API_TOKEN || !/^[a-f0-9]{32}$/i.test(process.env.CLOUDFLARE_ACCOUNT_ID || "")) return res.status(503).json({error:"The site owner needs to finish connecting the free image service."});
+  if(!process.env.OPENAI_API_KEY) return res.status(503).json({error:"The site owner needs to connect the OpenAI image service."});
 
   try{
     const b=req.body||{};
@@ -33,29 +33,29 @@ export default async function handler(req,res){
     if(packageId==="extra" && lookIndex===2 && !selected.some(x=>x.id==="cloud")) lookDescription="dreamy upscale blush ballroom with atmospheric lighting and a clear ceiling, without suspended balloons";
 
     const prompt=buildPrompt({packageName,packageDescription,lookName,lookDescription,selected,palette,guestCount,notes});
-    const response=await fetch(`https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/black-forest-labs/flux-1-schnell`,{
+    const response=await fetch("https://api.openai.com/v1/images/generations",{
       method:"POST",
       signal:AbortSignal.timeout(120000),
-      headers:{"Authorization":`Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,"Content-Type":"application/json"},
-      body:JSON.stringify({prompt,steps:4})
+      headers:{"Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,"Content-Type":"application/json"},
+      body:JSON.stringify({model:"gpt-image-2",prompt,n:1,size:"1536x1024",quality:"medium",output_format:"jpeg"})
     });
     const data=await response.json();
-    if(!response.ok || data.success===false) {
-      const internal=JSON.stringify(data.errors || []);
-      let reason="upstream_error", detail="The free image service is temporarily unavailable. Please try again shortly.";
-      if(/daily|quota|neurons|allocation/i.test(internal)) {
-        reason="daily_limit"; detail="Today's free AI allowance has been used. Please try again after midnight UTC when it resets.";
+    if(!response.ok || data.error) {
+      const internal=JSON.stringify(data.error || {});
+      let reason="upstream_error", detail="The image service is temporarily unavailable. Please try again shortly.";
+      if(/billing|quota|insufficient_quota/i.test(internal)) {
+        reason="billing_required"; detail="OpenAI image generation needs available API credit. The site owner needs to check OpenAI billing.";
       } else if(response.status===401 || response.status===403) {
-        reason="connection_required"; detail="The free image service could not authenticate. The site owner needs to check the Cloudflare connection.";
+        reason="connection_required"; detail="The image service could not authenticate. The site owner needs to check the OpenAI connection.";
       } else if(response.status===429) {
         reason="rate_limit"; detail="The image service is busy. Please wait a minute and try again.";
       } else if(/moderation|safety|content_policy/i.test(internal)) {
         reason="content_rejected"; detail="Please rephrase your event notes and try again.";
       }
       console.error("Image generation rejected",JSON.stringify({status:response.status,reason}));
-      return res.status(reason==="rate_limit" || reason==="daily_limit"?429:503).json({error:detail,code:reason});
+      return res.status(reason==="rate_limit" || reason==="billing_required"?429:503).json({error:detail,code:reason});
     }
-    const encoded=data.result?.image;
+    const encoded=data.data?.[0]?.b64_json;
     if(typeof encoded!=="string" || !encoded.length || !/^[A-Za-z0-9+/=]+$/.test(encoded)) throw new Error("Invalid image response");
     return res.status(200).json({image:`data:image/jpeg;base64,${encoded}`});
   }catch(error){
