@@ -1,3 +1,4 @@
+import {proposalPhotos,proposalPackagePhotos} from './proposal-photos.js';
 import {inspiration} from './inspiration.js';
 import {packages as sweetPackages, addons as sweetAddons} from './catalog.js';
 const makePackages=(rows,looks)=>Object.fromEntries(rows.map(([id,name,description])=>[id,{name,description,price:null,looks:looks.map(([title,description])=>[title,null,description])}]));
@@ -38,10 +39,13 @@ for(const [id,prices] of Object.entries(startingPrices)){
  event.hero=inspiration[id][0];
 }
 // Match the visible inspiration directions with the generation instructions.
-for(const pkg of Object.values(events.proposals.packages)){
- pkg.looks[0][0]='Rose-heart romance';pkg.looks[0][2]='A romantic red-rose-inspired focal design, adapted to the selected package scale. A heart-shaped frame may shape the focal backdrop; petals, balloons and lettering only when selected.';
- pkg.looks[1][0]='Soft candlelight';pkg.looks[1][2]='Ivory florals and softly glowing enclosed LED candles, with refined romantic lighting, within the selected package scope.';
- pkg.looks[2][0]='Intimate evening';pkg.looks[2][2]='Warm evening ambience, refined dark accents and intimate styling; dining furniture only if included in the selected package.';
+events.proposals.hero=proposalPhotos[4];
+events.proposals.gallery=proposalPhotos;
+for(const [id,pkg] of Object.entries(events.proposals.packages)){
+ pkg.looks=proposalPackagePhotos[id].map(i=>{
+  const photo=proposalPhotos[i];
+  return [photo.label,photo.src,photo.description+' Adapt the inspiration to the selected package scale and venue. Include lettering, petal pathways and extra decorations only if selected or part of the base package. No people or vendor marks in the generated concept.',null,photo.credit];
+ });
 }
 for(const pkg of Object.values(events.birthdays.packages)){
  pkg.looks[0][0]='Birthday surprise';pkg.looks[0][2]='A sophisticated surprise birthday setting with a warm celebratory palette; balloon decorations only when selected.';

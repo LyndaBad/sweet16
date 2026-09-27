@@ -30,6 +30,7 @@ function renderLooks(){
     btn.addEventListener("click",()=>{state.lookIndex=i;renderLooks();updateSummary();});
     const card=document.createElement("div");card.className="look-option";card.appendChild(btn);
     if(look[3]){const credit=document.createElement("a");credit.href=look[3];credit.target="_blank";credit.rel="noopener noreferrer";credit.className="photo-credit";credit.textContent="Photo source · Pexels";card.appendChild(credit);}
+    if(look[4]){const credit=document.createElement("span");credit.className="photo-credit";credit.textContent="Reference · "+look[4];card.appendChild(credit);}
     host.appendChild(card);
   });
 }
@@ -126,10 +127,11 @@ function switchEvent(id){
  $("birthdayField").classList.toggle("hidden",id!=="birthdays");$("heritageField").classList.toggle("hidden",id!=="traditional");
  $("heroImage").classList.remove("hidden");$("eventArtwork").classList.add("hidden");
  $("heroImage").src=event.hero?.src||"/assets/signature-pink.webp";$("heroImage").alt=event.hero?.label||"Sweet Sixteen decor concept";
- $("heroCredit").classList.toggle("hidden",!event.hero);$("heroCredit").href=event.hero?.source||"#";
+ $("heroCredit").classList.toggle("hidden",!event.hero?.source);$("heroCredit").href=event.hero?.source||"#";
  $("inspirationNote").textContent="Photos illustrate a mood, not the exact package or our past work. " + (id==="traditional" ? "Portrait references suggest colour and celebration style; your family’s customs guide the décor. " : "") + "Your AI concept combines your actual selections.";$("priceNote").classList.toggle("hidden",id==="sweet16");$("inspirationNote").classList.toggle("hidden",id==="sweet16");
  $("downloadBtn").download=id+"-decor-concept.jpg";$("generatedImage").alt="AI-generated "+event.name+" concept";
  document.querySelectorAll('.event-tab').forEach(btn=>{btn.setAttribute('aria-pressed',String(btn.dataset.event===id));});
+ $("proposalGallery").classList.toggle("hidden",id!=="proposals");
  document.body.dataset.event=id; renderAll();
 }
 for(const [id,event] of eventOrder.map(id=>[id,events[id]])){
@@ -141,4 +143,11 @@ $("enquiryForm").addEventListener("submit",e=>{
  window.location.href="mailto:"+enquiryEmail+"?subject="+encodeURIComponent(event.name+" decor enquiry — "+pkg.name)+"&body="+encodeURIComponent(body);
  $("enquiryStatus").textContent="Your email app will open. Review the enquiry and press Send. You can attach your saved concept image.";
 });
+for(const photo of events.proposals.gallery){
+ const figure=document.createElement("figure");
+ const img=document.createElement("img");img.src=photo.src;img.alt=photo.label;img.loading="lazy";
+ const caption=document.createElement("figcaption");caption.textContent=photo.label;
+ if(photo.credit){const credit=document.createElement("small");credit.textContent="Reference · "+photo.credit;caption.appendChild(credit);}
+ figure.append(img,caption);$("proposalPhotoGrid").appendChild(figure);
+}
 setupQty();switchEvent("sweet16");
