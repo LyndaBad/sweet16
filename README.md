@@ -1,16 +1,13 @@
 # Decorator Extraordinaire — Sweet 16 AI Designer
 
-Eight packages, three looks per package, ten optional add-ons and a server-side OpenAI image-generation endpoint.
+Eight packages, three looks each, ten add-ons and a server-side Cloudflare Workers AI image endpoint using FLUX.1 Schnell.
 
-## Deploy
-Import this dedicated repository into Vercel using the Other framework preset. No build command is required. Set OPENAI_API_KEY in the Vercel project environment variables, then deploy. Never put the key in client JavaScript or commit an .env file. The endpoint reads the key only on the server.
+## Setup
+Keep the website hosted on Vercel. Configure CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN as server-only environment variables, then deploy. Scope the token to Workers AI on the selected account. Never commit credentials. Use the Cloudflare Workers Free plan for a daily free allowance that stops at the limit; do not enable a paid plan or paid fallback without owner approval.
 
-## Verify
-Run `npm test`. Tests mock the upstream API and cover all 24 package/look combinations, add-on inclusion/exclusion, tablecloth quantities, invalid selections and safe error messages. Real generation and visual fidelity must also be checked after the production key is configured.
+## Verification
+Run npm test. Tests cover every package/look and add-on combination within the model's 2048-character prompt limit, validation, response parsing, and safe quota/auth errors. Real visual fidelity must also be tested after connecting Cloudflare.
 
-## Behavior
-The server uses the shared catalog rather than trusting client-provided package descriptions. Cloud Nine is only requested when selected, including for the Cloud Nine Ballroom visual direction. Base lounge seating and standard florals remain part of their package; unselected upgrades do not remove those base features. Changing selections hides the old preview and discards any in-flight result for earlier selections.
+The server trusts its shared catalog, not client descriptions. Base lounge seating and standard flowers stay included. Ceiling balloons require Cloud Nine. Changing selections discards stale previews. Exact counts and placement in generated images still need visual review.
 
-The image request uses gpt-image-2, landscape WebP output and a four-minute timeout. The Vercel function allows five minutes. Generated concepts are inspiration and require review; model output is not a guarantee of exact counts or placement.
-
-The current public endpoint has no persistent per-customer rate limiter. Configure hosting-side rate limits and an appropriate API project budget before broad customer promotion.
+The OpenAI API is no longer called. Existing OpenAI environment values can be removed by the owner; they are not used. Cloudflare credentials are never sent to the browser.
