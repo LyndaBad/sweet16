@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#6d2446" />
+  <title>Decorator Extraordinaire — Sweet 16 AI Designer</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Decorator Extraordinaire home">
+      <img src="/assets/logo.png" alt="Decorator Extraordinaire" />
+    </a>
+    <a class="pill-link" href="#builder">Build your Sweet 16</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Sweet 16 AI Designer</div>
+        <h1>Build it. See it. Love it.</h1>
+        <p>Select a package, choose the visual direction you love, add only the extras you actually want, then generate one holistic AI concept showing the full Sweet 16 together.</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="#builder">Start designing</a>
+          <span class="hero-note">Your chosen package and extras, brought together in one concept.</span>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="/assets/signature-pink.webp" alt="Sweet 16 decor inspiration" />
+        <div class="hero-card">Your event, visualised as one complete scene.</div>
+      </div>
+    </section>
+
+    <section class="builder-section" id="builder">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">Interactive package builder</div>
+          <h2>Design your Sweet 16</h2>
+        </div>
+        <p>Three simple steps: package → look → extras. Then the AI creates a brand-new final concept based on exactly those selections.</p>
+      </div>
+
+      <div class="builder-grid">
+        <aside class="controls-panel">
+          <div class="step-block">
+            <div class="step-number">1</div>
+            <div class="step-copy">
+              <h3>Choose your package</h3>
+              <p>Starting prices shown below.</p>
+            </div>
+          </div>
+          <div id="packageList" class="choice-list"></div>
+
+          <div class="step-block spacer-top">
+            <div class="step-number">2</div>
+            <div class="step-copy">
+              <h3>Choose your look</h3>
+              <p>Pick the visual direction closest to your taste.</p>
+            </div>
+          </div>
+          <div id="lookList" class="look-grid"></div>
+
+          <div class="step-block spacer-top">
+            <div class="step-number">3</div>
+            <div class="step-copy">
+              <h3>Add extras</h3>
+              <p>Only selected extras will be requested in the AI render.</p>
+            </div>
+          </div>
+          <div id="addonList" class="choice-list"></div>
+
+          <div id="tableclothQuantity" class="quantity-row hidden">
+            <label for="tableQty">Pink draped tablecloths</label>
+            <select id="tableQty"></select>
+          </div>
+
+          <details class="custom-details">
+            <summary>Optional event details</summary>
+            <div class="form-grid">
+              <label>Colour palette
+                <input id="palette" type="text" placeholder="e.g. blush pink, champagne gold, ivory" maxlength="120" />
+              </label>
+              <label>Guest count
+                <input id="guestCount" type="number" min="1" max="500" placeholder="e.g. 40" />
+              </label>
+              <label class="full">Anything else?
+                <textarea id="notes" rows="3" maxlength="500" placeholder="e.g. indoor hall, no balloons on tables, elegant rather than childish"></textarea>
+              </label>
+            </div>
+          </details>
+        </aside>
+
+        <section class="preview-panel">
+          <div class="preview-head">
+            <div>
+              <div class="preview-label">Your design summary</div>
+              <h3 id="summaryTitle">Sweet Start</h3>
+              <p id="summaryText"></p>
+            </div>
+            <div class="price-box">
+              <span>Starting estimate</span>
+              <strong id="estimate">$750+</strong>
+            </div>
+          </div>
+
+          <div class="selected-summary">
+            <div class="selected-line"><span>Look</span><strong id="selectedLook"></strong></div>
+            <div class="selected-line"><span>Add-ons</span><strong id="selectedAddons">None selected</strong></div>
+          </div>
+
+          <div class="generate-card">
+            <div class="generate-copy">
+              <h4>Generate the final holistic mock-up</h4>
+              <p>This creates a new AI image of the whole setup — not a collage of add-on cards.</p>
+            </div>
+            <button id="generateBtn" class="primary-btn generate-btn" type="button">Generate AI mock-up</button>
+          </div>
+
+          <div id="status" class="status" aria-live="polite"></div>
+
+          <div id="aiResult" class="ai-result empty-result">
+            <div id="emptyState" class="empty-state">
+              <span class="spark">✦</span>
+              <h4>Your final concept will appear here</h4>
+              <p>The image will reflect the selected package, look and add-ons together in one realistic event scene.</p>
+            </div>
+            <img id="generatedImage" class="hidden" alt="AI-generated Sweet 16 design concept" />
+          </div>
+
+          <div id="resultActions" class="result-actions hidden">
+            <button id="regenerateBtn" class="secondary-btn" type="button">Regenerate</button>
+            <a id="downloadBtn" class="secondary-btn" download="sweet-16-ai-concept.webp">Save image</a>
+          </div>
+
+          <p class="disclaimer">AI concepts are for visual direction. Final décor is adapted to the venue, availability, proportions and confirmed quote.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="/assets/logo.png" alt="Decorator Extraordinaire" />
+    <p>Sweet 16 event styling • Backdrops • Tablescapes • Florals • Venue transformations</p>
+  </footer>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
