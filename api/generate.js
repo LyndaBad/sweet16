@@ -38,7 +38,7 @@ export default async function handler(req,res){
 
     const birthdayAge=clean(b.birthdayAge,3);
     if(birthdayAge && (!Number.isInteger(Number(birthdayAge)) || Number(birthdayAge)<1 || Number(birthdayAge)>120)) return res.status(400).json({error:"Birthday age must be from 1 to 120."});
-    const prompt=buildPrompt({eventId,eventName:event.name,heritage:clean(b.heritage,300),birthdayAge,packageName,packageDescription,lookName,lookDescription,selected,palette,guestCount,notes});
+    const prompt=buildPrompt({unselectedExtras:Object.entries(addons).filter(([id])=>!selected.some(x=>x.id===id)).map(([,a])=>a[0]).join(", "),eventId,eventName:event.name,heritage:clean(b.heritage,300),birthdayAge,packageName,packageDescription,lookName,lookDescription,selected,palette,guestCount,notes});
     const response=await fetch("https://api.openai.com/v1/images/generations",{
       method:"POST",
       signal:AbortSignal.timeout(120000),
